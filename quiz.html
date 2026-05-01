@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Memory Quiz — For Akshu 💖</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --rose: #e8547a;
+            --blush: #f7a8b8;
+            --gold: #c9a84c;
+            --midnight: #0d0a14;
+            --wine: #6b1f3a;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: var(--midnight);
+            color: white;
+            font-family: 'DM Sans', sans-serif;
+        }
+
+        canvas#particleCanvas {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Each page is a full screen section, hidden by default */
+        .page {
+            min-height: 100vh;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 32px 20px;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .page.hidden { display: none; }
+
+        /* Typography */
+        .eyebrow {
+            font-size: 0.65rem;
+            letter-spacing: 0.4em;
+            text-transform: uppercase;
+            color: var(--gold);
+            margin-bottom: 14px;
+        }
+
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(1.8rem, 6vw, 3rem);
+            font-style: italic;
+            font-weight: 400;
+            background: linear-gradient(135deg, #fff 0%, var(--blush) 60%, var(--gold) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1.2;
+            margin-bottom: 14px;
+        }
+
+        .sub {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.1rem;
+            font-style: italic;
+            color: rgba(255,255,255,0.6);
+            line-height: 1.6;
+            max-width: 320px;
+            margin-bottom: 32px;
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-block;
+            padding: 16px 44px;
+            border: none;
+            border-radius: 3px;
+            background: linear-gradient(135deg, var(--rose), var(--wine));
+            color: white;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            cursor: pointer;
+            box-shadow: 0 8px 30px rgba(232, 84, 122, 0.4);
+            transition: transform 0.2s, box-shadow 0.2s;
+            -webkit-tap-highlight-color: transparent;
+            position: relative;
+            z-index: 10;
+        }
+        .btn:hover  { transform: translateY(-2px); box-shadow: 0 14px 40px rgba(232,84,122,0.55); }
+        .btn:active { transform: scale(0.97); }
+
+        /* Floating hearts welcome */
+        .hearts-welcome {
+            display: flex;
+            gap: 10px;
+            font-size: 1.8rem;
+            margin-bottom: 28px;
+        }
+        .hf { animation: hfloat 2s ease-in-out infinite; }
+        .hf:nth-child(2) { animation-delay:.25s; }
+        .hf:nth-child(3) { animation-delay:.5s; }
+        .hf:nth-child(4) { animation-delay:.75s; }
+        .hf:nth-child(5) { animation-delay:1s; }
+        @keyframes hfloat {
+            0%,100% { transform: translateY(0); }
+            50%      { transform: translateY(-8px); }
+        }
+
+        /* Quiz card */
+        .quiz-card {
+            width: 100%;
+            max-width: 400px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 16px;
+            padding: 32px 24px;
+            backdrop-filter: blur(16px);
+            box-shadow: 0 24px 64px rgba(0,0,0,0.5);
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Progress */
+        .progress-bar {
+            width: 100%;
+            height: 3px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-bottom: 24px;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--rose), var(--gold));
+            border-radius: 3px;
+            transition: width 0.5s ease;
+            width: 0%;
+        }
+
+        /* Heart lives */
+        .hearts-row {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            font-size: 1.3rem;
+            margin-bottom: 22px;
+        }
+        .hl { transition: filter 0.4s, transform 0.4s; }
+        .hl.lost { filter: grayscale(1) opacity(0.35); transform: scale(0.75); }
+        @keyframes hpulse { 0%{transform:scale(1)} 50%{transform:scale(1.5)} 100%{transform:scale(1)} }
+        .hl.pulse { animation: hpulse 0.45s ease; }
+
+        /* Question */
+        .q-label {
+            font-size: 0.6rem;
+            letter-spacing: 0.35em;
+            text-transform: uppercase;
+            color: var(--gold);
+            margin-bottom: 8px;
+        }
+        .q-text {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.35rem;
+            font-style: italic;
+            color: white;
+            line-height: 1.35;
+            margin-bottom: 22px;
+        }
+
+        /* Input */
+        .ans-input {
+            width: 100%;
+            padding: 13px 16px;
+            background: rgba(255,255,255,0.07);
+            border: 1px solid rgba(255,255,255,0.18);
+            border-radius: 8px;
+            color: white;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.1rem;
+            font-style: italic;
+            text-align: center;
+            outline: none;
+            margin-bottom: 14px;
+            transition: border-color 0.3s;
+            position: relative;
+            z-index: 5;
+        }
+        .ans-input:focus { border-color: var(--rose); }
+        .ans-input::placeholder { color: rgba(255,255,255,0.25); }
+
+        /* Feedback */
+        .feedback {
+            min-height: 22px;
+            font-family: 'Cormorant Garamond', serif;
+            font-style: italic;
+            font-size: 1rem;
+            margin-top: 10px;
+        }
+        .ok   { color: #5eead4; }
+        .warn { color: #fbbf24; }
+        .fail { color: var(--rose); }
+
+        /* Hint */
+        .hint-btn {
+            background: none;
+            border: none;
+            color: rgba(255,255,255,0.25);
+            font-size: 0.7rem;
+            letter-spacing: 0.15em;
+            cursor: pointer;
+            margin-top: 14px;
+            padding: 6px 10px;
+            transition: color 0.3s;
+            display: block;
+            width: 100%;
+        }
+        .hint-btn:hover { color: rgba(201,168,76,0.8); }
+
+        /* Shake */
+        @keyframes shake {
+            0%,100%{transform:translateX(0)}
+            20%{transform:translateX(-9px)}
+            40%{transform:translateX(9px)}
+            60%{transform:translateX(-6px)}
+            80%{transform:translateX(6px)}
+        }
+        .shake { animation: shake 0.4s ease; }
+
+        /* Result page */
+        .result-box {
+            max-width: 360px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 16px;
+            padding: 32px 24px;
+            backdrop-filter: blur(16px);
+            margin-bottom: 28px;
+        }
+        .result-emoji { font-size: 3.5rem; margin-bottom: 14px; }
+        .result-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.6rem;
+            font-style: italic;
+            background: linear-gradient(135deg,#fff,var(--blush),var(--gold));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 12px;
+        }
+        .result-msg {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.05rem;
+            font-style: italic;
+            color: rgba(255,255,255,0.65);
+            line-height: 1.6;
+        }
+
+        /* Final page */
+        .gallery {
+            display: flex;
+            gap: 14px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        /* Each frame = photo + song name + play button */
+        .mem-frame {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            width: 130px;
+        }
+        .mem-frame:nth-child(even) { margin-top: 18px; }
+
+        .mem-frame img {
+            width: 130px;
+            height: 165px;
+            object-fit: cover;
+            border-radius: 6px;
+            border: 3px solid rgba(255,255,255,0.85);
+            box-shadow: 0 12px 32px rgba(0,0,0,0.55);
+            display: block;
+            transition: transform 0.3s;
+        }
+        .mem-frame img:hover { transform: scale(1.04) rotate(1deg); }
+
+        .song-label {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 0.78rem;
+            font-style: italic;
+            color: rgba(255,255,255,0.55);
+            text-align: center;
+            line-height: 1.3;
+            max-width: 120px;
+        }
+
+        /* Play button */
+        .play-btn {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            border: 2px solid rgba(232,84,122,0.7);
+            background: rgba(232,84,122,0.12);
+            color: var(--rose);
+            font-size: 1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.25s, transform 0.2s, border-color 0.25s;
+            -webkit-tap-highlight-color: transparent;
+            position: relative;
+            z-index: 5;
+        }
+        .play-btn:hover  { background: rgba(232,84,122,0.28); transform: scale(1.1); border-color: var(--rose); }
+        .play-btn:active { transform: scale(0.95); }
+        .play-btn.playing {
+            background: var(--rose);
+            border-color: var(--rose);
+            color: white;
+            animation: btnPulse 1.2s ease-in-out infinite;
+        }
+        @keyframes btnPulse {
+            0%,100% { box-shadow: 0 0 0 0 rgba(232,84,122,0.5); }
+            50%      { box-shadow: 0 0 0 10px rgba(232,84,122,0); }
+        }
+
+        /* Sound wave bars shown when playing */
+        .wave-bars {
+            display: none;
+            align-items: flex-end;
+            gap: 2px;
+            height: 16px;
+        }
+        .wave-bars.active { display: flex; }
+        .wave-bars span {
+            display: block;
+            width: 3px;
+            border-radius: 2px;
+            background: var(--rose);
+            animation: waveBar 0.8s ease-in-out infinite alternate;
+        }
+        .wave-bars span:nth-child(1){ height:6px;  animation-delay:0s; }
+        .wave-bars span:nth-child(2){ height:14px; animation-delay:0.15s; }
+        .wave-bars span:nth-child(3){ height:10px; animation-delay:0.3s; }
+        .wave-bars span:nth-child(4){ height:16px; animation-delay:0.1s; }
+        .wave-bars span:nth-child(5){ height:8px;  animation-delay:0.25s; }
+        @keyframes waveBar {
+            from { transform: scaleY(0.4); }
+            to   { transform: scaleY(1); }
+        }
+
+        .final-msg {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.15rem;
+            font-style: italic;
+            color: rgba(255,255,255,0.7);
+            line-height: 1.75;
+            max-width: 320px;
+            margin: 0 auto 28px;
+        }
+
+        /* Confetti */
+        .cp {
+            position: fixed;
+            border-radius: 2px;
+            pointer-events: none;
+            z-index: 999;
+            animation: cpfall linear forwards;
+        }
+        @keyframes cpfall {
+            0%   { transform: translateY(-10px) rotate(0deg); opacity:1; }
+            100% { transform: translateY(110vh) rotate(700deg); opacity:0; }
+        }
+    </style>
+</head>
+<body>
+
+<canvas id="particleCanvas"></canvas>
+
+<!-- PAGE: WELCOME -->
+<div id="pgWelcome" class="page">
+    <p class="eyebrow">✦ memory lane quiz ✦</p>
+    <h1>How well do you<br>know us?</h1>
+    <div class="hearts-welcome">
+        <span class="hf">❤️</span>
+        <span class="hf">❤️</span>
+        <span class="hf">❤️</span>
+        <span class="hf">❤️</span>
+        <span class="hf">❤️</span>
+    </div>
+    <p class="sub">Five hearts. Five questions.<br>Each one is a piece of our story.</p>
+    <button class="btn" onclick="startQuiz()">Begin ✦</button>
+</div>
+
+<!-- PAGE: QUIZ -->
+<div id="pgQuiz" class="page hidden">
+    <div class="quiz-card" id="quizCard">
+        <div class="progress-bar"><div class="progress-fill" id="pFill"></div></div>
+        <div class="hearts-row" id="heartsRow"></div>
+        <p class="q-label" id="qLabel">Question 1 of 5</p>
+        <p class="q-text"  id="qText">—</p>
+        <input class="ans-input" id="ansInput" type="text" placeholder="your answer..."
+               autocomplete="off" autocorrect="off" spellcheck="false">
+        <button class="btn" style="width:100%; margin-bottom:0;" onclick="checkAnswer()">Confirm ✦</button>
+        <p class="feedback" id="feedback"></p>
+        <button class="hint-btn" id="hintBtn" onclick="showHint()">need a hint? ✦</button>
+    </div>
+</div>
+
+<!-- PAGE: RESULT -->
+<div id="pgResult" class="page hidden">
+    <p class="eyebrow">✦ quiz complete ✦</p>
+    <div class="result-box">
+        <div class="result-emoji" id="rEmoji">💖</div>
+        <p class="result-title" id="rTitle">—</p>
+        <p class="result-msg"   id="rMsg">—</p>
+    </div>
+    <button class="btn" onclick="showPage('pgFinal')">See our memories 🌸</button>
+</div>
+
+<!-- PAGE: FINAL -->
+<div id="pgFinal" class="page hidden">
+    <p class="eyebrow">✦ forever & always ✦</p>
+    <h1>Our favorite<br>memories</h1>
+
+    <div class="gallery">
+
+        <!-- Frame 1 -->
+        <div class="mem-frame">
+            <img src="images/1st.jpg" alt="">
+            <div class="wave-bars" id="wave0">
+                <span></span><span></span><span></span><span></span><span></span>
+            </div>
+            <p class="song-label">My dear Gem...💎</p>
+            <button class="play-btn" id="pb0" onclick="toggleSong(0)" title="Play">▶</button>
+        </div>
+
+        <!-- Frame 2 -->
+        <div class="mem-frame">
+            <img src="images/2nd.jpg" alt="">
+            <div class="wave-bars" id="wave1">
+                <span></span><span></span><span></span><span></span><span></span>
+            </div>
+            <p class="song-label">Best Bond...🫂</p>
+            <button class="play-btn" id="pb1" onclick="toggleSong(1)" title="Play">▶</button>
+        </div>
+
+        <!-- Frame 3 -->
+        <div class="mem-frame">
+            <img src="images/3rd.jpg" alt="">
+            <div class="wave-bars" id="wave2">
+                <span></span><span></span><span></span><span></span><span></span>
+            </div>
+            <p class="song-label">I'm the luckiest Girl...😇</p>
+            <button class="play-btn" id="pb2" onclick="toggleSong(2)" title="Play">▶</button>
+        </div>
+
+        <!-- Frame 4 -->
+        <div class="mem-frame">
+            <img src="images/4th.jpg" alt="">
+            <div class="wave-bars" id="wave3">
+                <span></span><span></span><span></span><span></span><span></span>
+            </div>
+            <p class="song-label">My Healer...❤️‍🩹</p>
+            <button class="play-btn" id="pb3" onclick="toggleSong(3)" title="Play">▶</button>
+        </div>
+
+    </div>
+
+    <p class="final-msg">
+        To many more laughs, more adventures,<br>
+        more snacks, and more memories.<br><br>
+        Happy Birthday, Akshu 🌹<br>
+        — Love, Divya (chokken)
+    </p>
+    <button class="btn" onclick="location.href='letter.html'">One More Small Present ✦</button>
+</div>
+
+<!-- Individual audio players — put your music files inside images/ folder -->
+<audio id="aud0" src="images/vairam.mp3"></audio>
+<audio id="aud1" src="images/aval.mp3"></audio>
+<audio id="aud2" src="images/rani.mp3"></audio>
+<audio id="aud3" src="images/thangatha.mp3"></audio>
+
+<script>
+/* Particles */
+const cvs = document.getElementById('particleCanvas');
+const ctx = cvs.getContext('2d');
+function resize(){ cvs.width = innerWidth; cvs.height = innerHeight; }
+resize(); addEventListener('resize', resize);
+
+const pts = Array.from({length:55}, () => ({
+    x: Math.random()*innerWidth, y: Math.random()*innerHeight,
+    r: Math.random()*2+0.5, vy: Math.random()*0.7+0.25,
+    vx: (Math.random()-0.5)*0.3, op: Math.random()*0.35+0.08,
+    rose: Math.random()>0.5
+}));
+function tick(){
+    ctx.clearRect(0,0,cvs.width,cvs.height);
+    pts.forEach(p=>{
+        p.y-=p.vy; p.x+=p.vx;
+        if(p.y<-6){ p.y=cvs.height+6; p.x=Math.random()*cvs.width; }
+        ctx.globalAlpha=p.op;
+        ctx.fillStyle=p.rose?'#e8547a':'#c9a84c';
+        ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2); ctx.fill();
+    });
+    ctx.globalAlpha=1;
+    requestAnimationFrame(tick);
+}
+tick();
+
+/* Page switching */
+function showPage(id){
+    document.querySelectorAll('.page').forEach(p=>p.classList.add('hidden'));
+    document.getElementById(id).classList.remove('hidden');
+}
+
+/* Quiz */
+const QS = [
+    {q:"What is our favorite song?",        a:"venmathi",                hint:"a beautiful Tamil melody..."},
+    {q:"Which was our first outing?",        a:"zoho tenkasi",hint:"think: zoho, exams, tenkasi..."},
+    {q:"What is we most used emoji?",        a:"laughing ",          hint:"the one that makes your stomach hurt 😂"},
+    {q:"One thing we both love?",            a:"food",                    hint:"simplest answer 😋"},
+    {q:"Our favorite place in college?",     a:"canteen",                 hint:"where all great convos happen..."}
+];
+
+let cur=0, score=5, tries=0;
+
+function buildHearts(){
+    const row=document.getElementById('heartsRow');
+    row.innerHTML='';
+    for(let i=0;i<5;i++){
+        const s=document.createElement('span');
+        s.className='hl'+(i>=score?' lost':'');
+        s.id='hl'+i; s.textContent='❤️';
+        row.appendChild(s);
+    }
+}
+
+function startQuiz(){
+    cur=0; score=5; tries=0;
+    loadQ();
+    showPage('pgQuiz');
+    document.getElementById('music').play().catch(()=>{});
+}
+
+function loadQ(){
+    tries=0;
+    document.getElementById('pFill').style.width=(cur/QS.length*100)+'%';
+    document.getElementById('qLabel').textContent=`Question ${cur+1} of ${QS.length}`;
+    document.getElementById('qText').textContent=QS[cur].q;
+    document.getElementById('ansInput').value='';
+    document.getElementById('feedback').textContent='';
+    document.getElementById('feedback').className='feedback';
+    document.getElementById('hintBtn').textContent='need a hint? ✦';
+    document.getElementById('hintBtn').style.color='';
+    buildHearts();
+    setTimeout(()=>document.getElementById('ansInput').focus(),150);
+}
+
+/* Allow Enter key */
+document.getElementById('ansInput').addEventListener('keydown', function(e){
+    if(e.key==='Enter') checkAnswer();
+});
+
+function showHint(){
+    const b=document.getElementById('hintBtn');
+    b.textContent='✦ '+QS[cur].hint;
+    b.style.color='rgba(201,168,76,0.8)';
+}
+
+function checkAnswer(){
+    const val=document.getElementById('ansInput').value.trim().toLowerCase();
+    const ans=QS[cur].a.toLowerCase();
+    const fb=document.getElementById('feedback');
+
+    if(val===ans){
+        fb.className='feedback ok'; fb.textContent='✓ You remembered! ✨';
+        for(let i=0;i<score;i++){
+            const h=document.getElementById('hl'+i); if(!h) continue;
+            setTimeout(()=>h.classList.add('pulse'),i*70);
+            setTimeout(()=>h.classList.remove('pulse'),i*70+500);
+        }
+        setTimeout(advance,1100);
+    } else {
+        tries++;
+        const card=document.getElementById('quizCard');
+        card.classList.add('shake');
+        setTimeout(()=>card.classList.remove('shake'),450);
+        if(tries===1){
+            fb.className='feedback warn'; fb.textContent='Not quite... one more try 🥺';
+        } else {
+            score=Math.max(0,score-1);
+            fb.className='feedback fail'; fb.textContent='Memory slipped away... 💔';
+            const lost=document.getElementById('hl'+score);
+            if(lost){ lost.classList.add('pulse'); setTimeout(()=>{lost.classList.remove('pulse');lost.classList.add('lost');},300); }
+            setTimeout(advance,1500);
+        }
+    }
+}
+
+function advance(){
+    cur++;
+    if(cur<QS.length) loadQ(); else showResult();
+}
+
+function showResult(){
+    document.getElementById('pFill').style.width='100%';
+    const e=document.getElementById('rEmoji'),t=document.getElementById('rTitle'),m=document.getElementById('rMsg');
+    if(score===5){
+        e.textContent='✨'; t.textContent='Perfect Memory!';
+        m.textContent="All 5 hearts alive! You know every piece of our story. That's how I know you're my person. 🌹";
+        confetti();
+    } else if(score>=3){
+        e.textContent='💖'; t.textContent='Soulmate Connection!';
+        m.textContent=score+' hearts safe. The small details don\'t matter — what matters is that you\'re here. 🌸';
+        confetti();
+    } else {
+        e.textContent='🥺'; t.textContent='Sweet Memories!';
+        m.textContent=score+' hearts remain. Even if the details fade, our bond never will. I love you always. ❤️‍🩹';
+    }
+    showPage('pgResult');
+}
+
+/* ── Individual song players (final page) ── */
+let activeSong = -1;
+
+function toggleSong(idx){
+    const aud  = document.getElementById('aud'+idx);
+    const btn  = document.getElementById('pb'+idx);
+    const wave = document.getElementById('wave'+idx);
+
+    // If this one is already playing → pause it
+    if(activeSong === idx){
+        aud.pause();
+        btn.textContent = '▶';
+        btn.classList.remove('playing');
+        wave.classList.remove('active');
+        activeSong = -1;
+        return;
+    }
+
+    // Stop whatever was playing before
+    if(activeSong !== -1){
+        const prevAud  = document.getElementById('aud'+activeSong);
+        const prevBtn  = document.getElementById('pb'+activeSong);
+        const prevWave = document.getElementById('wave'+activeSong);
+        prevAud.pause(); prevAud.currentTime = 0;
+        prevBtn.textContent = '▶';
+        prevBtn.classList.remove('playing');
+        prevWave.classList.remove('active');
+    }
+
+    // Play new one
+    aud.currentTime = 0;
+    aud.play().catch(()=>{});
+    btn.textContent = '⏸';
+    btn.classList.add('playing');
+    wave.classList.add('active');
+    activeSong = idx;
+
+    // Auto-reset when song ends
+    aud.onended = () => {
+        btn.textContent = '▶';
+        btn.classList.remove('playing');
+        wave.classList.remove('active');
+        activeSong = -1;
+    };
+}
+
+function confetti(){
+    const colors=['#e8547a','#c9a84c','#f7a8b8','#ffffff','#fbbf24'];
+    for(let i=0;i<70;i++){
+        setTimeout(()=>{
+            const c=document.createElement('div'); c.className='cp';
+            c.style.cssText=`left:${Math.random()*100}vw;top:-10px;width:${Math.random()*7+3}px;height:${Math.random()*7+3}px;background:${colors[Math.floor(Math.random()*colors.length)]};border-radius:${Math.random()>.5?'50%':'2px'};animation-duration:${1.4+Math.random()*2}s;animation-delay:${Math.random()*.4}s;`;
+            document.body.appendChild(c);
+            setTimeout(()=>c.remove(),4000);
+        },i*25);
+    }
+}
+</script>
+</body>
+</html>

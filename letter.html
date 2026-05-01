@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For Akshu 💖</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:wght@300;400;600&display=swap" rel="stylesheet">    <style>
+        :root {
+            --primary: #ff4ecd;
+            --secondary: #7a5cff;
+            --accent: #00f0ff;
+            --paper-bg: #fdfaf1;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: #0a0a0a;
+            color: white;
+            overflow-x: hidden;
+            background: radial-gradient(circle at center, #1a1a1a 0%, #000 100%);
+        }
+
+        /* Floating Hearts Background */
+        .bg-hearts {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .page {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+
+        /* Improved Scroll Letter */
+        .scroll-paper {
+            display: inline-block;
+            width: auto;
+            max-width: 90vw;
+            max-width: 90vw;
+            background: var(--paper-bg);
+            color: #3d2b1f;
+            padding: 50px 30px;
+            position: relative;
+            border-radius: 4px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+            margin-top: 40px;
+        }
+        .scroll-content pre {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 24px;
+    line-height: 1.6;
+    font-style: italic;
+    white-space: pre-wrap;
+    font-weight: 600;
+}
+
+        .scroll-paper::before, .scroll-paper::after {
+            content: "";
+            position: absolute;
+            left: -5px; right: -5px;
+            height: 40px;
+            background: #e4dec6;
+            border: 2px solid #d4cca8;
+            border-radius: 100px / 40px;
+        }
+        
+
+        .scroll-paper::before { top: -20px; box-shadow: 0 5px 10px rgba(0,0,0,0.1); }
+        .scroll-paper::after { bottom: -20px; box-shadow: 0 -5px 10px rgba(0,0,0,0.1); }
+
+        .scroll-content h2 {
+        font-family: 'Playfair Display', serif;
+        font-size: 32px;
+        font-style: italic;
+        color: #a04000;
+        margin-bottom: 15px;
+    }
+
+        .scroll-content p {
+            font-family: 'Great Vibes', cursive;
+            font-size: 24px;
+            line-height: 1.4;
+        }
+        .page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;   /* horizontal center */
+}
+
+/* Top Image */
+.top-image {
+    width: 250px;
+    margin-bottom: 20px;
+    border-radius: 15px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+}
+
+/* Music Button */
+.music-btn {
+    margin-top: 25px;
+    font-size: 30px;
+    cursor: pointer;
+    background: linear-gradient(45deg, var(--primary), var(--secondary));
+    border: none;
+    padding: 12px 18px;
+    border-radius: 50%;
+    color: white;
+    box-shadow: 0 5px 20px rgba(255, 78, 205, 0.5);
+    transition: 0.3s;
+      font-family: 'DM Sans', sans-serif;
+}
+
+.music-btn:hover {
+    transform: scale(1.1);
+}
+
+    </style>
+</head>
+<body>
+
+<canvas class="bg-hearts" id="heartCanvas"></canvas>
+
+<div class="page">
+
+    <!-- Image on top -->
+    <img src="/images/movie.jpg" alt="Akshu" class="top-image">
+  <!-- Music Button -->
+    <button class="music-btn" onclick="playMusic()">🎵</button>
+    <div class="scroll-paper">
+        <div class="scroll-content">
+            <h2>Dear Akshu,</h2>
+            <pre>
+                Hello my personal diary 🤍,
+
+First of all, wish you many more happy returns of the day 🎂✨
+
+First, sorry… in these 5 years if anything I wrote hurt you 💔
+And I can’t say a list of thanks because it’s too big 🥹
+Not one or two… a lot of thanks I need to say, so overall — thank you so much 🤍✨
+
+Especially… so many people came into my life and left without understanding me 😶‍🌫️
+Still, you are the only one who stayed close to me and kept being with me 🫶🏻
+
+These 5 years of memories… I can’t write in a single letter, there’s so much 📖💭
+
+No matter how messy life gets, in a world full of judgment, one true soul who accepts your secrets, trusts you, and still stands by you — like Soumi — is truly priceless 🤍✨
+According to this POV, I’m the luckiest girl to have you 🫠💙
+
+A lot of things I need to share… everything is in my heart 🥺
+But I don’t know why I can’t write it here ✍🏻
+
+I’m getting emotional....🥺
+
+Finally, one thing I need to say…
+No matter how many problems come, I trust you’ll still be with me in the coming days 🤞🏻
+But I don’t know what time will decide ⏳
+
+Whatever happens, you are the best, best, best person in my world 💯❤️‍🩹
+
+Once again, happiest birthday… my poison bottle 🫠🤍🎂
+<br>
+                <strong>— Your Chokken ❤️‍🩹</strong>
+            </pre>
+        </div>
+    </div>
+
+  
+
+</div>
+
+<audio id="music" loop>
+    <source src="images/varam.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+function playMusic() {
+    const music = document.getElementById("music");
+    if (music.paused) {
+        music.play();
+    } else {
+        music.pause();
+    }
+}
+</script>
+
+</body>
+</html>

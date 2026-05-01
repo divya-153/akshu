@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For Akshu 💖</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --rose: #e8547a;
+            --blush: #f7a8b8;
+            --gold: #c9a84c;
+            --cream: #fdf6ee;
+            --ink: #2c1810;
+            --midnight: #0d0a14;
+            --wine: #6b1f3a;
+            --petal: #f9d8e0;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            background: var(--midnight);
+            color: white;
+            overflow-x: hidden;
+            cursor: none;
+        }
+
+        /* Custom Cursor */
+        .cursor {
+            position: fixed;
+            width: 12px; height: 12px;
+            background: var(--rose);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%);
+            transition: transform 0.1s, width 0.3s, height 0.3s, opacity 0.3s;
+            mix-blend-mode: difference;
+        }
+        .cursor-trail {
+            position: fixed;
+            width: 30px; height: 30px;
+            border: 1px solid rgba(232, 84, 122, 0.4);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9998;
+            transform: translate(-50%, -50%);
+            transition: left 0.12s ease-out, top 0.12s ease-out;
+        }
+
+        /* Particle Canvas */
+        #particleCanvas {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* ===== PAGES ===== */
+        .page {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 24px;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+        .hidden { display: none !important; }
+
+        /* ===== ENTRY PAGE ===== */
+        #page1 {
+            background: radial-gradient(ellipse at center, #1a0a12 0%, var(--midnight) 70%);
+        }
+
+        .entry-glow {
+            position: absolute;
+            width: 400px; height: 400px;
+            background: radial-gradient(circle, rgba(232, 84, 122, 0.15) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: pulseGlow 3s ease-in-out infinite;
+        }
+        @keyframes pulseGlow {
+            0%, 100% { transform: scale(1); opacity: 0.6; }
+            50% { transform: scale(1.2); opacity: 1; }
+        }
+
+        .entry-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(2rem, 8vw, 4.5rem);
+            font-weight: 300;
+            font-style: italic;
+            color: var(--cream);
+            letter-spacing: 0.04em;
+            line-height: 1.2;
+            margin-bottom: 8px;
+            opacity: 0;
+            animation: fadeUp 1.8s ease forwards 0.5s;
+        }
+        .entry-sub {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.75rem;
+            font-weight: 300;
+            letter-spacing: 0.35em;
+            text-transform: uppercase;
+            color: rgba(249, 216, 224, 0.5);
+            margin-bottom: 60px;
+            opacity: 0;
+            animation: fadeUp 1.8s ease forwards 1.2s;
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Gift Button */
+        .gift-btn {
+            position: relative;
+            padding: 0;
+            border: none;
+            background: none;
+            cursor: none;
+            opacity: 0;
+            animation: fadeUp 1.8s ease forwards 1.8s;
+        }
+        .gift-btn-inner {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 18px 48px;
+            border: 1px solid rgba(232, 84, 122, 0.4);
+            border-radius: 2px;
+            background: transparent;
+            color: var(--blush);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.8rem;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            transition: all 0.5s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .gift-btn-inner::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, var(--rose), var(--wine));
+            transform: translateX(-100%);
+            transition: transform 0.5s ease;
+        }
+        .gift-btn-inner:hover::before { transform: translateX(0); }
+        .gift-btn-inner:hover { color: white; border-color: transparent; }
+        .gift-btn-inner span, .gift-btn-inner .btn-icon { position: relative; z-index: 1; }
+
+        /* ===== MAIN PAGE ===== */
+        #page2 {
+            background: radial-gradient(ellipse at 30% 20%, #1f0a18 0%, var(--midnight) 60%);
+            gap: 0;
+            padding-top: 60px;
+            padding-bottom: 60px;
+        }
+
+        .birthday-label {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.65rem;
+            letter-spacing: 0.45em;
+            text-transform: uppercase;
+            color: var(--gold);
+            margin-bottom: 16px;
+            opacity: 0;
+            animation: fadeDown 1s ease forwards 0.2s;
+        }
+        @keyframes fadeDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .birthday-title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2.2rem, 7vw, 4rem);
+            font-weight: 400;
+            font-style: italic;
+            line-height: 1.1;
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, #fff 0%, var(--blush) 50%, var(--gold) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            opacity: 0;
+            animation: fadeDown 1s ease forwards 0.5s;
+        }
+
+        .birthday-heart {
+            font-size: 1.2rem;
+            margin-bottom: 40px;
+            opacity: 0;
+            animation: fadeDown 1s ease forwards 0.8s;
+        }
+
+        /* Polaroid Slideshow */
+        .polaroid-stage {
+            position: relative;
+            width: 240px;
+            height: 300px;
+            margin-bottom: 50px;
+            opacity: 0;
+            animation: fadeUp 1s ease forwards 1s;
+        }
+
+        .polaroid {
+            position: absolute;
+            width: 220px;
+            background: white;
+            padding: 10px 10px 36px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.6), 0 2px 8px rgba(0,0,0,0.3);
+            border-radius: 2px;
+            transform-origin: bottom center;
+            transition: opacity 0.8s ease, transform 1.2s cubic-bezier(0.23, 1, 0.32, 1);
+            opacity: 0;
+            transform: rotate(0deg) translateY(20px) scale(0.95);
+            left: 10px;
+        }
+
+        .polaroid.active {
+            opacity: 1;
+            transform: rotate(var(--rot)) translateY(0) scale(1);
+        }
+        .polaroid:nth-child(1) { --rot: -2deg; }
+        .polaroid:nth-child(2) { --rot: 1.5deg; }
+        .polaroid:nth-child(3) { --rot: -1deg; }
+        .polaroid:nth-child(4) { --rot: 2.5deg; }
+        .polaroid:nth-child(5) { --rot: -1.8deg; }
+        .polaroid:nth-child(6) { --rot: 0.8deg; }
+
+        .polaroid img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .polaroid-caption {
+            height: 26px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Cormorant Garamond', serif;
+            font-style: italic;
+            font-size: 0.85rem;
+            color: #555;
+            letter-spacing: 0.05em;
+        }
+
+        /* Photo dots */
+        .photo-dots {
+            display: flex;
+            gap: 6px;
+            margin-top: -30px;
+            margin-bottom: 40px;
+        }
+        .dot {
+            width: 5px; height: 5px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            transition: background 0.3s, transform 0.3s;
+        }
+        .dot.active { background: var(--rose); transform: scale(1.4); }
+
+        /* Letter Scroll */
+        .letter-wrap {
+            position: relative;
+            margin-bottom: 50px;
+            opacity: 0;
+            animation: fadeUp 1s ease forwards 1.3s;
+        }
+
+        /* Top curl */
+        .scroll-curl-top, .scroll-curl-bottom {
+            width: calc(100% + 12px);
+            margin-left: -6px;
+            height: 28px;
+            background: linear-gradient(135deg, #e8dfc4, #d4c99a);
+            border-radius: 100px / 28px;
+            position: relative;
+        }
+        .scroll-curl-top {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3), inset 0 -2px 4px rgba(255,255,255,0.3);
+            z-index: 2;
+        }
+        .scroll-curl-bottom {
+            box-shadow: 0 -4px 12px rgba(0,0,0,0.3), inset 0 2px 4px rgba(255,255,255,0.3);
+            z-index: 2;
+        }
+
+        .letter-body {
+            background: linear-gradient(180deg, #fdf8ef 0%, #f9f3e3 100%);
+            padding: 32px 28px;
+            width: 340px;
+            max-width: 90vw;
+            position: relative;
+            z-index: 1;
+            /* Paper lines */
+            background-image: 
+                linear-gradient(180deg, #fdf8ef 0%, #f9f3e3 100%),
+                repeating-linear-gradient(
+                    transparent,
+                    transparent 27px,
+                    rgba(200, 180, 150, 0.2) 27px,
+                    rgba(200, 180, 150, 0.2) 28px
+                );
+            background-blend-mode: normal;
+        }
+
+        .letter-salutation {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.6rem;
+            font-style: italic;
+            color: var(--wine);
+            margin-bottom: 16px;
+        }
+
+        .letter-body p {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.15rem;
+            font-style: italic;
+            line-height: 1.8;
+            color: #3d2b1f;
+        }
+
+        .letter-sig {
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            font-size: 1.1rem;
+            color: var(--wine);
+            margin-top: 20px;
+            text-align: right;
+        }
+
+        /* Wax Seal */
+        .wax-seal {
+            position: absolute;
+            bottom: -20px;
+            right: 24px;
+            width: 50px; height: 50px;
+            background: radial-gradient(circle at 35% 35%, #c0392b, #8b0000);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.4), inset 0 -2px 4px rgba(0,0,0,0.3);
+            z-index: 5;
+        }
+        .wax-seal::after {
+            content: '';
+            position: absolute;
+            width: 42px; height: 42px;
+            border-radius: 50%;
+            border: 1px solid rgba(255,255,255,0.15);
+        }
+
+        /* Quiz button */
+        .quiz-btn {
+            padding: 18px 50px;
+            border: none;
+            background: linear-gradient(135deg, var(--rose), var(--wine));
+            color: white;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.8rem;
+            letter-spacing: 0.25em;
+            text-transform: uppercase;
+            border-radius: 2px;
+            cursor: none;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(232, 84, 122, 0.4);
+            transition: transform 0.3s, box-shadow 0.3s;
+            opacity: 0;
+            animation: fadeUp 1s ease forwards 1.6s;
+        }
+        .quiz-btn::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.15), transparent);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .quiz-btn:hover { transform: translateY(-3px); box-shadow: 0 16px 48px rgba(232, 84, 122, 0.6); }
+        .quiz-btn:hover::after { opacity: 1; }
+
+        /* Shooting stars */
+        .shooting-star {
+            position: fixed;
+            width: 2px;
+            height: 80px;
+            background: linear-gradient(transparent, white, transparent);
+            pointer-events: none;
+            animation: shoot 1.5s ease-in forwards;
+            z-index: 0;
+        }
+        @keyframes shoot {
+            0% { transform: translateX(0) translateY(0) rotate(-45deg); opacity: 1; }
+            100% { transform: translateX(300px) translateY(300px) rotate(-45deg); opacity: 0; }
+        }
+
+        /* Floating petals */
+        .petal {
+            position: fixed;
+            font-size: 0.9rem;
+            pointer-events: none;
+            animation: floatPetal linear infinite;
+            z-index: 0;
+            opacity: 0.6;
+        }
+        @keyframes floatPetal {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.6; }
+            90% { opacity: 0.4; }
+            100% { transform: translateY(-20vh) rotate(360deg); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-trail" id="cursorTrail"></div>
+<canvas id="particleCanvas"></canvas>
+
+<!-- ENTRY PAGE -->
+<div id="page1" class="page">
+    <div class="entry-glow"></div>
+    <p class="entry-sub">a birthday surprise</p>
+    <h1 class="entry-title">Something made<br>just for you</h1>
+    <button class="gift-btn" onclick="enterSite()">
+        <div class="gift-btn-inner">
+            <span>Open your gift</span>
+            <span class="btn-icon">✦</span>
+        </div>
+    </button>
+</div>
+
+<!-- MAIN PAGE -->
+<div id="page2" class="page hidden">
+    <p class="birthday-label">✦ for you, always ✦</p>
+    <h1 class="birthday-title">Happy Birthday,<br>Akshu</h1>
+    <p class="birthday-heart">❤️‍🩹</p>
+
+    <div class="polaroid-stage">
+        <div class="polaroid active">
+            <img src="images/a-saree.jpg" alt="">
+            <div class="polaroid-caption">radiant ✨</div>
+        </div>
+        <div class="polaroid">
+            <img src="images/a-t-sitting.jpg" alt="">
+            <div class="polaroid-caption">sunshine 🌸</div>
+        </div>
+        <div class="polaroid">
+            <img src="images/tenkasi- back-pose.jpeg" alt="">
+            <div class="polaroid-caption">our tenkasi ♡</div>
+        </div>
+        <div class="polaroid">
+            <img src="images/a-h-1.jpg" alt="">
+            <div class="polaroid-caption">my favorite ♡</div>
+        </div>
+        <div class="polaroid">
+            <img src="images/a-c-standing-1.jpg" alt="">
+            <div class="polaroid-caption">forever ✦</div>
+        </div>
+        <div class="polaroid">
+            <img src="images/a-c-heart.jpg" alt="">
+            <div class="polaroid-caption">us 💖</div>
+        </div>
+    </div>
+
+    <div class="photo-dots" id="photoDots"></div>
+
+    
+    <button class="quiz-btn" onclick="window.location.href='quiz.html'">
+        Play the Birthday Quiz 🎮
+    </button>
+</div>
+
+<audio id="music" loop>
+    <source src="music.mp3">
+</audio>
+
+<script>
+    // Custom cursor
+    const cursor = document.getElementById('cursor');
+    const trail = document.getElementById('cursorTrail');
+    document.addEventListener('mousemove', e => {
+        cursor.style.left = e.clientX + 'px';
+        cursor.style.top = e.clientY + 'px';
+        setTimeout(() => {
+            trail.style.left = e.clientX + 'px';
+            trail.style.top = e.clientY + 'px';
+        }, 80);
+    });
+    document.querySelectorAll('button, .gift-btn').forEach(el => {
+        el.addEventListener('mouseenter', () => {
+            cursor.style.width = '20px';
+            cursor.style.height = '20px';
+        });
+        el.addEventListener('mouseleave', () => {
+            cursor.style.width = '12px';
+            cursor.style.height = '12px';
+        });
+    });
+
+    // Particle canvas
+    const canvas = document.getElementById('particleCanvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    window.addEventListener('resize', () => {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    });
+
+    class Particle {
+        constructor() { this.reset(); }
+        reset() {
+            this.x = Math.random() * canvas.width;
+            this.y = canvas.height + Math.random() * 100;
+            this.size = Math.random() * 3 + 1;
+            this.speedY = Math.random() * 1.2 + 0.3;
+            this.speedX = (Math.random() - 0.5) * 0.5;
+            this.opacity = Math.random() * 0.5 + 0.1;
+            this.type = Math.random() > 0.7 ? 'heart' : 'dot';
+        }
+        draw() {
+            ctx.globalAlpha = this.opacity;
+            if (this.type === 'heart') {
+                ctx.fillStyle = `hsl(${340 + Math.random() * 20}, 70%, 70%)`;
+                const s = this.size * 1.5;
+                ctx.beginPath();
+                ctx.moveTo(this.x, this.y - s * 0.3);
+                ctx.bezierCurveTo(this.x - s, this.y - s, this.x - s, this.y + s * 0.4, this.x, this.y + s * 0.8);
+                ctx.bezierCurveTo(this.x + s, this.y + s * 0.4, this.x + s, this.y - s, this.x, this.y - s * 0.3);
+                ctx.fill();
+            } else {
+                ctx.fillStyle = `rgba(201, 168, 76, ${this.opacity})`;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size * 0.5, 0, Math.PI * 2);
+                ctx.fill();
+            }
+            ctx.globalAlpha = 1;
+        }
+        update() {
+            this.y -= this.speedY;
+            this.x += this.speedX;
+            if (this.y < -20) this.reset();
+        }
+    }
+
+    const particles = Array.from({ length: 50 }, () => new Particle());
+    particles.forEach((p, i) => { p.y = Math.random() * canvas.height; });
+
+    function animateParticles() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        particles.forEach(p => { p.update(); p.draw(); });
+        requestAnimationFrame(animateParticles);
+    }
+    animateParticles();
+
+    // Shooting stars
+    function shootStar() {
+        const star = document.createElement('div');
+        star.className = 'shooting-star';
+        star.style.left = Math.random() * window.innerWidth * 0.7 + 'px';
+        star.style.top = Math.random() * window.innerHeight * 0.4 + 'px';
+        document.body.appendChild(star);
+        setTimeout(() => star.remove(), 1500);
+        setTimeout(shootStar, 3000 + Math.random() * 4000);
+    }
+    setTimeout(shootStar, 2000);
+
+    // Floating petals
+    const petalEmojis = ['🌸', '✿', '❀', '🌺', '✦', '°'];
+    for (let i = 0; i < 12; i++) {
+        const p = document.createElement('div');
+        p.className = 'petal';
+        p.textContent = petalEmojis[Math.floor(Math.random() * petalEmojis.length)];
+        p.style.left = Math.random() * 100 + 'vw';
+        p.style.animationDuration = (8 + Math.random() * 12) + 's';
+        p.style.animationDelay = (Math.random() * 10) + 's';
+        p.style.fontSize = (0.6 + Math.random() * 0.8) + 'rem';
+        document.body.appendChild(p);
+    }
+
+    // Polaroid slideshow
+    const polaroids = document.querySelectorAll('.polaroid');
+    const dotsContainer = document.getElementById('photoDots');
+    let current = 0;
+
+    // Create dots
+    polaroids.forEach((_, i) => {
+        const dot = document.createElement('div');
+        dot.className = 'dot' + (i === 0 ? ' active' : '');
+        dotsContainer.appendChild(dot);
+    });
+    const dots = document.querySelectorAll('.dot');
+
+    function rotatePolaroid() {
+        polaroids[current].classList.remove('active');
+        dots[current].classList.remove('active');
+        current = (current + 1) % polaroids.length;
+        polaroids[current].classList.add('active');
+        dots[current].classList.add('active');
+    }
+    setInterval(rotatePolaroid, 3800);
+
+    // Enter site
+    function enterSite() {
+        const audio = document.getElementById('music');
+        audio.play().catch(() => {});
+        document.getElementById('page1').classList.add('hidden');
+        document.getElementById('page2').classList.remove('hidden');
+        // Rain petals on entry
+        for (let i = 0; i < 8; i++) {
+            setTimeout(() => {
+                const p = document.createElement('div');
+                p.className = 'petal';
+                p.textContent = ['🌸', '✦', '❤️', '🌺'][Math.floor(Math.random() * 4)];
+                p.style.left = Math.random() * 100 + 'vw';
+                p.style.animationDuration = (5 + Math.random() * 6) + 's';
+                p.style.fontSize = (0.8 + Math.random()) + 'rem';
+                document.body.appendChild(p);
+            }, i * 150);
+        }
+    }
+</script>
+</body>
+</html>
